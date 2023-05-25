@@ -71,3 +71,16 @@ const renderGoods = (arr) => {
 };
 
 renderGoods(dataArray);
+
+const addGoods = document.querySelector(".panel__add-goods");
+const closeBtn = document.querySelector(".modal__close");
+addGoods.addEventListener("click", () => {
+  overlay.classList.add("active");
+});
+overlay.addEventListener("click", (e) => {
+  const target = e.target;
+  console.log(target);
+  if (target === overlay || target.closest(closeBtn)) {
+    overlay.classList.remove("active");
+  }
+});
