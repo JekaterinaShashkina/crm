@@ -40,25 +40,34 @@ const createRow = (obj) => {
   sum.classList.add("table__cell");
   sum.textContent = `$${count * price}`;
 
-const wrapper = document.createElement('td')
-wrapper.classList.add('table__cell', 'table__cell_btn-wrapper')
-  const picBtn = document.createElement('button')
-  picBtn.classList.add('table__btn', 'table__btn_pic')
-  const editBtn = document.createElement('button')
-  editBtn.classList.add('table__btn', 'table__btn_edit')
-  const delBtn = document.createElement('button')
-  delBtn.classList.add('table__btn', 'table__btn_del')
-  wrapper.append(picBtn, editBtn, delBtn)
+  const wrapper = document.createElement("td");
+  wrapper.classList.add("table__cell", "table__cell_btn-wrapper");
+  const picBtn = document.createElement("button");
+  picBtn.classList.add("table__btn", "table__btn_pic");
+  const editBtn = document.createElement("button");
+  editBtn.classList.add("table__btn", "table__btn_edit");
+  const delBtn = document.createElement("button");
+  delBtn.classList.add("table__btn", "table__btn_del");
+  wrapper.append(picBtn, editBtn, delBtn);
 
-  tr.append(tdNumber, product, tdCategory, tdUnits,tdCount, tdPrice, sum, wrapper)
-return tr
+  tr.append(
+    tdNumber,
+    product,
+    tdCategory,
+    tdUnits,
+    tdCount,
+    tdPrice,
+    sum,
+    wrapper
+  );
+  return tr;
 };
 
 const renderGoods = (arr) => {
-  const table = document.querySelector('.table__body')
-  table.textContent = ''
-const data = arr.map(createRow)
-table.append(...data)
+  const table = document.querySelector(".table__body");
+  table.textContent = "";
+  const data = arr.map(createRow);
+  table.append(...data);
 };
 
-renderGoods(dataArray)
+renderGoods(dataArray);
