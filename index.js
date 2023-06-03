@@ -82,3 +82,15 @@ overlay.addEventListener("click", (e) => {
     overlay.classList.remove("active");
   }
 });
+const list = document.querySelector(".goods__table");
+
+list.addEventListener("click", (e) => {
+  const target = e.target;
+  if (target.closest(".table__btn_del")) {
+    const tr = target.closest("tr");
+    const id = tr.querySelector(".table__cell_name").dataset.id;
+    dataArray.splice(id - 1, 1);
+    console.log(dataArray);
+    tr.remove();
+  }
+});
