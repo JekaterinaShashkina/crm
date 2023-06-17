@@ -1,20 +1,21 @@
-const modalOpen = (overlay) => {
+import { getVendorCode } from "./var.js";
+
+const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
+  const vendorCode = getVendorCode();
+  // При открытии модального окна должен генерироваться случайный id и заполняться span с классом vendor-code__id
+  const id = Math.floor(Math.random() * 1000000);
+  vendorCode.textContent = id;
+  form.total.textContent = 0;
 };
 export const modalClose = (overlay) => {
   overlay.classList.remove("active");
 };
-const addGoods = document.querySelector(".panel__add-goods");
 
 export const addProduct = (overlay, modalForm) => {
-  const vendorCode = document.querySelector(".vendor-code__id");
-
+  const addGoods = document.querySelector(".panel__add-goods");
   addGoods.addEventListener("click", () => {
-    modalOpen(overlay);
-    // При открытии модального окна должен генерироваться случайный id и заполняться span с классом vendor-code__id
-    const id = Math.floor(Math.random() * 1000000);
-    vendorCode.textContent = id;
-    modalForm.total.textContent = 0;
+    modalOpen(overlay, modalForm);
   });
 
   // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
@@ -44,4 +45,14 @@ export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
       modalInputDiscount.setAttribute("disabled", "true");
     }
   });
+};
+
+export const totalUpdate = (total, arr) => {
+  total.textContent = "";
+  let totalprice = 0;
+  arr.forEach((elem) => {
+    const sum = elem.innerHTML;
+    totalprice += +sum.slice(1);
+  });
+  return totalprice;
 };

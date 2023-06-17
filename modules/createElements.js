@@ -1,10 +1,9 @@
-export const createRow = (obj) => {
-  const { nr, id, name, price, category, count, units } = obj;
-
+export const createRow = (obj, index) => {
+  const { id, name, price, category, count, units } = obj;
   const tr = document.createElement("tr");
   const tdNumber = document.createElement("td");
   tdNumber.classList.add("table__cell");
-  tdNumber.textContent = id;
+  tdNumber.textContent = `${index + 1}`;
   const product = document.createElement("td");
   product.classList.add("table__cell", "table__cell_left", "table__cell_name");
   product.dataset.id = id;
