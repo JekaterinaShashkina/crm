@@ -1,4 +1,6 @@
-import { getVendorCode } from "./var.js";
+import { dataArray } from "../dataArray.js";
+import { renderGoods } from "./render.js";
+import { getTableSum, getVendorCode } from "./var.js";
 
 const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
@@ -8,7 +10,7 @@ const modalOpen = (overlay, form) => {
   vendorCode.textContent = id;
   form.total.textContent = 0;
 };
-export const modalClose = (overlay) => {
+const modalClose = (overlay) => {
   overlay.classList.remove("active");
 };
 
@@ -17,7 +19,6 @@ export const addProduct = (overlay, modalForm) => {
   addGoods.addEventListener("click", () => {
     modalOpen(overlay, modalForm);
   });
-
   // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
   modalForm.price.addEventListener("change", (e) => {
     const total = modalForm.price.value * modalForm.count.value;
@@ -55,4 +56,38 @@ export const totalUpdate = (total, arr) => {
     totalprice += +sum.slice(1);
   });
   return totalprice;
+};
+export const deleteRow = (list, arr, table, total) => {
+  list.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target.closest(".table__btn_del")) {
+      const tr = target.closest("tr");
+      const id = tr.querySelector(".table__cell_name").dataset.id;
+      arr.splice(id - 1, 1);
+      tr.remove();
+      renderGoods(arr, table);
+      const tableSum = getTableSum();
+      const totalprice = totalUpdate(total, tableSum);
+      total.textContent = ` $ ${totalprice}`;
+    }
+  });
+};
+export const submitProduct = (modalForm, table, total, overlay) => {
+  modalForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const id = getVendorCode();
+    const formData = new FormData(e.target);
+    formData.append("id", id.textContent);
+    const newProduct = Object.fromEntries(formData);
+
+    dataArray.push(newProduct);
+    console.log(newProduct);
+    renderGoods(dataArray, table);
+    const tableSum = getTableSum();
+    const totalprice = totalUpdate(total, tableSum);
+    console.log(tableSum);
+    total.textContent = ` $ ${totalprice}`;
+    modalForm.reset();
+    modalClose(overlay);
+  });
 };

@@ -2,7 +2,8 @@ import { dataArray } from "./dataArray.js";
 import {
   addProduct,
   controlCheckbox,
-  modalClose,
+  deleteRow,
+  submitProduct,
   totalUpdate,
 } from "./modules/control.js";
 import { renderGoods } from "./modules/render.js";
@@ -14,7 +15,6 @@ import {
   getOverlay,
   getTable,
   getTableSum,
-  getVendorCode,
 } from "./modules/var.js";
 
 const init = () => {
@@ -32,39 +32,10 @@ const init = () => {
   const total = document.querySelector(".cms__total-price");
   const tableSum = getTableSum();
 
-  list.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.closest(".table__btn_del")) {
-      const tr = target.closest("tr");
-      const id = tr.querySelector(".table__cell_name").dataset.id;
-      dataArray.splice(id - 1, 1);
-      tr.remove();
-      renderGoods(dataArray, table);
-      const tableSum = getTableSum();
-      const totalprice = totalUpdate(total, tableSum);
-      total.textContent = ` $ ${totalprice}`;
-    }
-  });
-
+  deleteRow(list, dataArray, table, total);
   controlCheckbox(modalCheckbox, modalInputDiscount);
 
-  modalForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const id = getVendorCode();
-    const formData = new FormData(e.target);
-    formData.append("id", id.textContent);
-    const newProduct = Object.fromEntries(formData);
-
-    dataArray.push(newProduct);
-    console.log(newProduct);
-    renderGoods(dataArray, table);
-    const tableSum = getTableSum();
-    const totalprice = totalUpdate(total, tableSum);
-    console.log(tableSum);
-    total.textContent = ` $ ${totalprice}`;
-    modalForm.reset();
-    modalClose(overlay);
-  });
+  submitProduct(modalForm, table, total, overlay);
 
   const totalprice = totalUpdate(total, tableSum);
   total.textContent = ` $ ${totalprice}`;
