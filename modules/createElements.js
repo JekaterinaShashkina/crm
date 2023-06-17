@@ -6,7 +6,7 @@ export const createRow = (obj, index) => {
   tdNumber.textContent = `${index + 1}`;
   const product = document.createElement("td");
   product.classList.add("table__cell", "table__cell_left", "table__cell_name");
-  product.dataset.id = id;
+  product.dataset.id = index;
   product.textContent = name;
   const idSpan = document.createElement("span");
   idSpan.classList.add("table__cell-id");

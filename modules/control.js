@@ -1,6 +1,11 @@
 import { dataArray } from "../dataArray.js";
 import { renderGoods } from "./render.js";
-import { getTableSum, getVendorCode } from "./var.js";
+import {
+  modalCheckbox,
+  modalInputDiscount,
+  getTableSum,
+  getVendorCode,
+} from "./var.js";
 
 const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
@@ -14,10 +19,10 @@ const modalClose = (overlay) => {
   overlay.classList.remove("active");
 };
 
-export const addProduct = (overlay, modalForm) => {
-  const addGoods = document.querySelector(".panel__add-goods");
+export const addProduct = (overlay, modalForm, table, total, addGoods) => {
   addGoods.addEventListener("click", () => {
     modalOpen(overlay, modalForm);
+    controlCheckbox(modalCheckbox, modalInputDiscount);
   });
   // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
   modalForm.price.addEventListener("change", (e) => {
@@ -30,11 +35,36 @@ export const addProduct = (overlay, modalForm) => {
       modalClose(overlay);
     }
   });
+  submitProduct(modalForm, table, total, overlay);
 };
 
-// В форме если поставить чекбокс должен быть разблокирован input с name discount_count
-// Если чекбокс убрать поле discount_count очищается и блокируется
-export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
+export const deleteRow = (list, arr, table, total) => {
+  list.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target.closest(".table__btn_del")) {
+      const tr = target.closest("tr");
+      const id = tr.querySelector(".table__cell_name").dataset.id;
+      console.log(id);
+      arr.splice(id, 1);
+      tr.remove();
+      renderGoods(arr, table);
+      const tableSum = getTableSum();
+      const totalprice = totalUpdate(total, tableSum);
+      total.textContent = ` $ ${totalprice}`;
+    }
+  });
+};
+export const totalUpdate = (total, arr) => {
+  total.textContent = "";
+  let totalprice = 0;
+  arr.forEach((elem) => {
+    const sum = elem.innerHTML;
+    totalprice += +sum.slice(1);
+  });
+  return totalprice;
+};
+
+const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
   modalCheckbox.addEventListener("click", () => {
     if (modalCheckbox.checked) {
       modalInputDiscount.removeAttribute("disabled");
@@ -48,44 +78,17 @@ export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
   });
 };
 
-export const totalUpdate = (total, arr) => {
-  total.textContent = "";
-  let totalprice = 0;
-  arr.forEach((elem) => {
-    const sum = elem.innerHTML;
-    totalprice += +sum.slice(1);
-  });
-  return totalprice;
-};
-export const deleteRow = (list, arr, table, total) => {
-  list.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.closest(".table__btn_del")) {
-      const tr = target.closest("tr");
-      const id = tr.querySelector(".table__cell_name").dataset.id;
-      arr.splice(id - 1, 1);
-      tr.remove();
-      renderGoods(arr, table);
-      const tableSum = getTableSum();
-      const totalprice = totalUpdate(total, tableSum);
-      total.textContent = ` $ ${totalprice}`;
-    }
-  });
-};
-export const submitProduct = (modalForm, table, total, overlay) => {
+const submitProduct = (modalForm, table, total, overlay) => {
   modalForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const id = getVendorCode();
     const formData = new FormData(e.target);
     formData.append("id", id.textContent);
     const newProduct = Object.fromEntries(formData);
-
     dataArray.push(newProduct);
-    console.log(newProduct);
     renderGoods(dataArray, table);
     const tableSum = getTableSum();
     const totalprice = totalUpdate(total, tableSum);
-    console.log(tableSum);
     total.textContent = ` $ ${totalprice}`;
     modalForm.reset();
     modalClose(overlay);

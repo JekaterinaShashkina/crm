@@ -1,42 +1,25 @@
 import { dataArray } from "./dataArray.js";
-import {
-  addProduct,
-  controlCheckbox,
-  deleteRow,
-  submitProduct,
-  totalUpdate,
-} from "./modules/control.js";
+import { addProduct, deleteRow, totalUpdate } from "./modules/control.js";
 import { renderGoods } from "./modules/render.js";
 import {
-  getList,
-  getModalCheckbox,
-  getModalForm,
-  getModalInputDiscount,
-  getOverlay,
-  getTable,
+  list,
+  modalForm,
+  overlay,
   getTableSum,
+  table,
+  addGoods,
 } from "./modules/var.js";
 
 const init = () => {
-  const table = getTable();
-  const modalCheckbox = getModalCheckbox();
-  const modalInputDiscount = getModalInputDiscount();
-  const modalForm = getModalForm();
-  const overlay = getOverlay();
-  const list = getList();
-
   overlay.classList.remove("active");
 
   renderGoods(dataArray, table);
-  addProduct(overlay, modalForm);
   const total = document.querySelector(".cms__total-price");
+
+  addProduct(overlay, modalForm, table, total, addGoods);
   const tableSum = getTableSum();
 
   deleteRow(list, dataArray, table, total);
-  controlCheckbox(modalCheckbox, modalInputDiscount);
-
-  submitProduct(modalForm, table, total, overlay);
-
   const totalprice = totalUpdate(total, tableSum);
   total.textContent = ` $ ${totalprice}`;
 };
