@@ -34,6 +34,8 @@ export const createRow = (obj, index) => {
   wrapper.classList.add("table__cell", "table__cell_btn-wrapper");
   const picBtn = document.createElement("button");
   picBtn.classList.add("table__btn", "table__btn_pic");
+  picBtn.dataset.pic =
+    "https://kartinki.pibig.info/uploads/posts/2023-04/1680777454_kartinki-pibig-info-p-nebolshaya-kartinka-sovi-arti-1.jpg";
   const editBtn = document.createElement("button");
   editBtn.classList.add("table__btn", "table__btn_edit");
   const delBtn = document.createElement("button");
