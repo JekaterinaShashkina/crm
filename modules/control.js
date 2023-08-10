@@ -24,6 +24,7 @@ export const addProduct = (overlay, modalForm, table, total, addGoods) => {
     modalOpen(overlay, modalForm);
     controlCheckbox(modalCheckbox, modalInputDiscount);
   });
+  uploadFile();
   // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
   modalForm.price.addEventListener("change", (e) => {
     const total = modalForm.price.value * modalForm.count.value;
@@ -92,5 +93,33 @@ const submitProduct = (modalForm, table, total, overlay) => {
     total.textContent = ` $ ${totalprice}`;
     modalForm.reset();
     modalClose(overlay);
+  });
+};
+
+const uploadFile = () => {
+  const fieldset = document.querySelector(".modal__fieldset");
+  const input = document.querySelector(".modal__file");
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("wrapper");
+
+  fieldset.append(wrapper);
+
+  input.addEventListener("change", () => {
+    if (input.files.length > 0) {
+      if (input.files[0].size < 1000000) {
+        const preview = document.createElement("img");
+        preview.classList.add("preview");
+        const src = URL.createObjectURL(input.files[0]);
+        console.log(input.files[0].size);
+        preview.src = src;
+        preview.style.display = "block";
+        wrapper.append(preview);
+      } else {
+        const message = document.createElement("p");
+        message.classList.add("message");
+        message.textContent = "Изображение не должно превышать размер 1 мб";
+        wrapper.append(message);
+      }
+    }
   });
 };
