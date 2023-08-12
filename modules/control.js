@@ -1,10 +1,12 @@
 import { dataArray } from "../dataArray.js";
+import { fetchRequest } from "./fetchRequest.js";
 import { renderGoods } from "./render.js";
 import {
   modalCheckbox,
   modalInputDiscount,
   getTableSum,
   getVendorCode,
+  modalForm,
 } from "./var.js";
 
 const modalOpen = (overlay, form) => {
@@ -14,9 +16,14 @@ const modalOpen = (overlay, form) => {
   const id = Math.floor(Math.random() * 1000000);
   vendorCode.textContent = id;
   form.total.textContent = 0;
+  const fieldset = document.querySelector(".modal__fieldset");
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("wrapper");
+  fieldset.append(wrapper);
 };
 const modalClose = (overlay) => {
   overlay.classList.remove("active");
+  modalForm.reset();
 };
 
 export const addProduct = (overlay, modalForm, table, total, addGoods) => {
@@ -36,23 +43,30 @@ export const addProduct = (overlay, modalForm, table, total, addGoods) => {
       modalClose(overlay);
     }
   });
-  submitProduct(modalForm, table, total, overlay);
+  submitProduct(modalForm, overlay);
 };
 
-export const deleteRow = (list, arr, table, total) => {
+export const deleteRow = (list) => {
   list.addEventListener("click", (e) => {
     const target = e.target;
     if (target.closest(".table__btn_del")) {
       const tr = target.closest("tr");
-      const id = tr.querySelector(".table__cell_name").dataset.id;
+      const id = tr.querySelector(".table__cell-id").textContent.slice(4);
       console.log(id);
-      arr.splice(id, 1);
-      tr.remove();
-      renderGoods(arr, table);
-      const tableSum = getTableSum();
-      const totalprice = totalUpdate(total, tableSum);
-      total.textContent = ` $ ${totalprice}`;
+      fetchRequest(`goods/${id}`, {
+        method: "DELETE",
+      });
+
+      // arr.splice(id, 1);
+      // tr.remove();
+      // renderGoods(arr, table);
+      // const tableSum = getTableSum();
+      // const totalprice = totalUpdate(total, tableSum);
+      // total.textContent = ` $ ${totalprice}`;
     }
+    // fetchRequest("goods", {
+    //   callback: renderGoods,
+    // });
   });
 };
 export const totalUpdate = (total, arr) => {
@@ -79,32 +93,40 @@ const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
   });
 };
 
-const submitProduct = (modalForm, table, total, overlay) => {
+const submitProduct = (modalForm, overlay) => {
   modalForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const id = getVendorCode();
+    // const id = getVendorCode();
+    // console.log(id);
     const formData = new FormData(e.target);
-    formData.append("id", id.textContent);
+    // formData.append("id", id.textContent);
     const newProduct = Object.fromEntries(formData);
-    dataArray.push(newProduct);
-    renderGoods(dataArray, table);
-    const tableSum = getTableSum();
-    const totalprice = totalUpdate(total, tableSum);
-    total.textContent = ` $ ${totalprice}`;
+    console.log(newProduct);
+    const resp = fetchRequest("goods", {
+      method: "POST",
+      body: newProduct,
+      callback: (err, data) => {
+        if (err) {
+          console.warn(err, data);
+          return;
+        }
+      },
+    });
+    console.log(resp);
     modalForm.reset();
     modalClose(overlay);
+    fetchRequest("goods", {
+      callback: renderGoods,
+    });
   });
 };
 
 const uploadFile = () => {
-  const fieldset = document.querySelector(".modal__fieldset");
   const input = document.querySelector(".modal__file");
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("wrapper");
-
-  fieldset.append(wrapper);
-
   input.addEventListener("change", () => {
+    const wrapper = document.querySelector(".wrapper");
+    console.log(wrapper);
+
     if (input.files.length > 0) {
       if (input.files[0].size < 1000000) {
         const preview = document.createElement("img");

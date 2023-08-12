@@ -1,5 +1,7 @@
 import { dataArray } from "./dataArray.js";
+import { changeProduct } from "./modules/changeProduct.js";
 import { addProduct, deleteRow, totalUpdate } from "./modules/control.js";
+import { fetchRequest } from "./modules/fetchRequest.js";
 import { renderGoods } from "./modules/render.js";
 import {
   list,
@@ -8,20 +10,23 @@ import {
   getTableSum,
   table,
   addGoods,
+  total,
 } from "./modules/var.js";
 
 const init = () => {
   overlay.classList.remove("active");
-
-  renderGoods(dataArray, table);
-  const total = document.querySelector(".cms__total-price");
+  const goods = fetchRequest("goods", {
+    callback: renderGoods,
+  });
+  // renderGoods(dataArray, table);
+  // const total = document.querySelector(".cms__total-price");
 
   addProduct(overlay, modalForm, table, total, addGoods);
   const tableSum = getTableSum();
-
-  deleteRow(list, dataArray, table, total);
-  const totalprice = totalUpdate(total, tableSum);
-  total.textContent = ` $ ${totalprice}`;
+  changeProduct(list, overlay, goods);
+  deleteRow(list);
+  // const totalprice = totalUpdate(total, tableSum);
+  // total.textContent = ` $ ${totalprice}`;
 
   list.addEventListener("click", (e) => {
     if (e.target.closest(".table__btn_pic")) {

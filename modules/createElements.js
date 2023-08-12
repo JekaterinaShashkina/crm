@@ -1,5 +1,9 @@
+import { totalUpdate } from "./control.js";
+import { getTableSum, total, URL } from "./var.js";
+let totalprice = 0;
+
 export const createRow = (obj, index) => {
-  const { id, name, price, category, count, units } = obj;
+  const { id, title, price, category, count, units, image } = obj;
   const tr = document.createElement("tr");
   const tdNumber = document.createElement("td");
   tdNumber.classList.add("table__cell");
@@ -7,7 +11,7 @@ export const createRow = (obj, index) => {
   const product = document.createElement("td");
   product.classList.add("table__cell", "table__cell_left", "table__cell_name");
   product.dataset.id = index;
-  product.textContent = name;
+  product.textContent = title;
   const idSpan = document.createElement("span");
   idSpan.classList.add("table__cell-id");
   idSpan.textContent = `id: ${id}`;
@@ -27,15 +31,16 @@ export const createRow = (obj, index) => {
   tdPrice.textContent = `$${price}`;
   const sum = document.createElement("td");
   sum.classList.add("table__cell", "table__sum");
-  const total = count * price;
-  sum.textContent = `$${total}`;
+  const tp = count * price;
+  sum.textContent = `$${tp}`;
+  totalprice += tp;
+  total.textContent = ` $ ${totalprice}`;
 
   const wrapper = document.createElement("td");
   wrapper.classList.add("table__cell", "table__cell_btn-wrapper");
   const picBtn = document.createElement("button");
   picBtn.classList.add("table__btn", "table__btn_pic");
-  picBtn.dataset.pic =
-    "https://kartinki.pibig.info/uploads/posts/2023-04/1680777454_kartinki-pibig-info-p-nebolshaya-kartinka-sovi-arti-1.jpg";
+  picBtn.dataset.pic = `http://localhost:3000/${image}`;
   const editBtn = document.createElement("button");
   editBtn.classList.add("table__btn", "table__btn_edit");
   const delBtn = document.createElement("button");
