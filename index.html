@@ -59,6 +59,7 @@
             <form class="panel__search">
               <input
                 type="search"
+                name="search"
                 class="panel__input"
                 placeholder="Поиск по наименованию и категории"
               />
@@ -191,10 +192,11 @@
                 type="text"
                 name="category"
                 id="category"
+                list="category-list"
                 required
               />
             </label>
-
+            <datalist id="category-list"> </datalist>
             <label
               class="modal__label modal__label_description"
               for="description"
@@ -283,6 +285,30 @@
             <button class="modal__submit" type="submit">Добавить товар</button>
           </div>
         </form>
+      </div>
+    </div>
+    <div class="overlay confirm__overlay">
+      <div class="confirm modal">
+        <button class="modal__close">
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m2 2 20 20M2 22 22 2"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <h2 class="modal__title" style="margin-bottom: 30px">
+          Вы хотите удалить этот товар?
+        </h2>
+        <button class="modal__submit">Подтвердить</button>
+        <button class="modal__cancel">Отменить</button>
       </div>
     </div>
   </body>

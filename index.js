@@ -3,6 +3,7 @@ import { changeProduct } from "./modules/changeProduct.js";
 import { addProduct, deleteRow, totalUpdate } from "./modules/control.js";
 import { fetchRequest } from "./modules/fetchRequest.js";
 import { renderGoods } from "./modules/render.js";
+import { searchControl } from "./modules/searchControl.js";
 import {
   list,
   modalForm,
@@ -21,13 +22,13 @@ const init = () => {
   // renderGoods(dataArray, table);
   // const total = document.querySelector(".cms__total-price");
 
-  addProduct(overlay, modalForm, table, total, addGoods);
-  const tableSum = getTableSum();
+  addProduct(overlay, modalForm, total, addGoods);
+  // const tableSum = getTableSum();
   changeProduct(list, overlay, goods);
   deleteRow(list);
   // const totalprice = totalUpdate(total, tableSum);
   // total.textContent = ` $ ${totalprice}`;
-
+  searchControl();
   list.addEventListener("click", (e) => {
     if (e.target.closest(".table__btn_pic")) {
       console.log("picture");

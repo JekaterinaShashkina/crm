@@ -1,5 +1,6 @@
+import { submitProduct } from "./control.js";
 import { fetchRequest } from "./fetchRequest.js";
-import { modalForm, URL } from "./var.js";
+import { modalForm, overlay, URL } from "./var.js";
 const fieldset = document.querySelector(".modal__fieldset");
 
 export const changeProduct = (list, overlay, goods) => {
@@ -55,8 +56,24 @@ const renderChangeGood = (data) => {
   idSpan.textContent = id;
   const submit = modalForm.querySelector(".modal__submit");
   submit.textContent = "Изменить товар";
+  console.log(modalForm);
+  // submitProduct(modalForm, overlay);
   modalForm.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log(e.target);
+    const formData = new FormData(e.target);
+    const newProduct = Object.fromEntries(formData);
+    console.log(newProduct);
+    const resp = fetchRequest("goods", {
+      method: "PATCH",
+      body: newProduct,
+      callback: (err, data) => {
+        if (err) {
+          console.warn(err, data);
+          return;
+        }
+      },
+    });
+    console.log(resp);
   });
 };

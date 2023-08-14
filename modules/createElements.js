@@ -1,7 +1,7 @@
 import { totalUpdate } from "./control.js";
 import { getTableSum, total, URL } from "./var.js";
-let totalprice = 0;
 
+let totalprice = 0;
 export const createRow = (obj, index) => {
   const { id, title, price, category, count, units, image } = obj;
   const tr = document.createElement("tr");
@@ -33,7 +33,9 @@ export const createRow = (obj, index) => {
   sum.classList.add("table__cell", "table__sum");
   const tp = count * price;
   sum.textContent = `$${tp}`;
+
   totalprice += tp;
+  // console.log(totalprice);
   total.textContent = ` $ ${totalprice}`;
 
   const wrapper = document.createElement("td");
