@@ -12,10 +12,12 @@ import {
   table,
   addGoods,
   total,
+  overlayChange,
 } from "./modules/var.js";
-
 const init = () => {
   overlay.classList.remove("active");
+  overlayChange.classList.remove("active");
+
   const goods = fetchRequest("goods", {
     callback: renderGoods,
   });
@@ -24,7 +26,7 @@ const init = () => {
 
   addProduct(overlay, modalForm, total, addGoods);
   // const tableSum = getTableSum();
-  changeProduct(list, overlay, goods);
+  changeProduct(list, overlayChange, goods);
   deleteRow(list);
   // const totalprice = totalUpdate(total, tableSum);
   // total.textContent = ` $ ${totalprice}`;

@@ -1,6 +1,6 @@
-import { submitProduct } from "./control.js";
+import { priceControl, submitProduct } from "./control.js";
 import { fetchRequest } from "./fetchRequest.js";
-import { modalForm, overlay, URL } from "./var.js";
+import { modalChange, overlayChange, URL } from "./var.js";
 const fieldset = document.querySelector(".modal__fieldset");
 
 export const changeProduct = (list, overlay, goods) => {
@@ -13,8 +13,7 @@ export const changeProduct = (list, overlay, goods) => {
         method: "GET",
         callback: renderChangeGood,
       });
-      console.log(good);
-
+      // console.log(good);
       overlay.classList.add("active");
     }
   });
@@ -34,19 +33,20 @@ const renderChangeGood = (data) => {
     image,
   } = data;
   const idSpan = document.querySelector(".vendor-code__id");
-  modalForm.title.value = title;
-  modalForm.description.value = description;
-  modalForm.price.value = price;
-  modalForm.units.value = units;
-  modalForm.discount_count.value = discount;
+  modalChange.title.value = title;
+  modalChange.description.value = description;
+  modalChange.price.value = price;
+  modalChange.units.value = units;
+  modalChange.discount_count.value = discount;
   if (+discount > 0) {
-    console.log(modalForm.discount);
-    modalForm.discount.checked = true;
+    console.log(modalChange.discount);
+    modalChange.discount.checked = true;
   }
-  modalForm.category.value = category;
-  modalForm.count.value = count;
-  modalForm.total.value = count * price;
-  modalForm.image.src = `http://localhost:3000/${image}`;
+  modalChange.category.value = category;
+  modalChange.count.value = count;
+  modalChange.total.value = count * price;
+  priceControl(modalChange);
+  modalChange.image.src = `http://localhost:3000/${image}`;
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper");
   const pic = document.createElement("img");
@@ -54,26 +54,8 @@ const renderChangeGood = (data) => {
   wrapper.append(pic);
   fieldset.append(wrapper);
   idSpan.textContent = id;
-  const submit = modalForm.querySelector(".modal__submit");
+  const submit = modalChange.querySelector(".modal__submit");
   submit.textContent = "Изменить товар";
-  console.log(modalForm);
-  // submitProduct(modalForm, overlay);
-  modalForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log(e.target);
-    const formData = new FormData(e.target);
-    const newProduct = Object.fromEntries(formData);
-    console.log(newProduct);
-    const resp = fetchRequest("goods", {
-      method: "PATCH",
-      body: newProduct,
-      callback: (err, data) => {
-        if (err) {
-          console.warn(err, data);
-          return;
-        }
-      },
-    });
-    console.log(resp);
-  });
+  console.log(modalChange);
+  submitProduct(modalChange, overlayChange, id);
 };

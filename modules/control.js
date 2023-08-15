@@ -36,14 +36,7 @@ export const addProduct = (overlay, modalForm, total, addGoods) => {
   getCategory();
   uploadFile();
   // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
-  modalForm.price.addEventListener("change", (e) => {
-    const total = modalForm.price.value * modalForm.count.value;
-    modalForm.total.textContent = total;
-  });
-  modalForm.count.addEventListener("change", (e) => {
-    const total = modalForm.price.value * modalForm.count.value;
-    modalForm.total.textContent = total;
-  });
+  priceControl(modalForm);
   overlay.addEventListener("click", (e) => {
     const target = e.target;
     if (target === overlay || target.closest(".modal__close")) {
@@ -107,46 +100,33 @@ const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
   });
 };
 
-export const submitProduct = (modalForm, overlay) => {
+export const submitProduct = (modalForm, overlay, id) => {
   modalForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
-    const btn = document.querySelector(".modal__submit").textContent;
-    console.log(btn);
-    if (btn === "Добавить товар") {
-      const formData = new FormData(e.target);
-      const newProduct = Object.fromEntries(formData);
+    const formData = new FormData(e.target);
+    const newProduct = Object.fromEntries(formData);
+    if (id) {
+      const resp = fetchRequest(`goods/${id}`, {
+        method: "PATCH",
+        body: newProduct,
+      });
+    } else {
       const resp = fetchRequest("goods", {
         method: "POST",
         body: newProduct,
-        callback: (err, data) => {
-          if (err) {
-            console.warn(err, data);
-            return;
-          }
-        },
+        // callback: (err, data) => {
+        //   if (err) {
+        //     console.warn(err, data);
+        //     return;
+        //   }
+        // },
       });
-      console.log(resp);
-    } else {
-      const formData = new FormData(e.target);
-      const newProduct = Object.fromEntries(formData);
-      console.log(newProduct);
-      const resp = fetchRequest("goods/", {
-        method: "PATCH",
-        body: newProduct,
-        callback: (err, data) => {
-          if (err) {
-            console.warn(err, data);
-            return;
-          }
-        },
-      });
-      console.log(resp);
+      // console.log(resp);
     }
 
     modalForm.reset();
     modalClose(overlay);
-    fetchRequest("goods", {
+    const goods = fetchRequest("goods", {
       callback: renderGoods,
     });
   });
@@ -182,7 +162,7 @@ const getCategory = () => {
     method: "GET",
     callback: createCategory,
   });
-  console.log(data);
+  // console.log(data);
 };
 const createCategory = (data, err) => {
   if (err) {
@@ -191,9 +171,20 @@ const createCategory = (data, err) => {
   }
   const categories = data.map((elem) => {
     const option = document.createElement("option");
-    console.log("elem", elem);
+    // console.log("elem", elem);
     option.value = elem;
     return option;
   });
   datalist.append(...categories);
+};
+
+export const priceControl = (modalForm) => {
+  modalForm.price.addEventListener("change", (e) => {
+    const total = modalForm.price.value * modalForm.count.value;
+    modalForm.total.textContent = total;
+  });
+  modalForm.count.addEventListener("change", (e) => {
+    const total = modalForm.price.value * modalForm.count.value;
+    modalForm.total.textContent = total;
+  });
 };
