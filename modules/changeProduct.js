@@ -1,7 +1,6 @@
-import { priceControl, submitProduct } from "./control.js";
+import { modalClose, priceControl, submitProduct } from "./control.js";
 import { fetchRequest } from "./fetchRequest.js";
 import { modalChange, overlayChange, URL } from "./var.js";
-const fieldset = document.querySelector(".modal__fieldset");
 
 export const changeProduct = (list, overlay, goods) => {
   list.addEventListener("click", (e) => {
@@ -15,6 +14,12 @@ export const changeProduct = (list, overlay, goods) => {
       });
       // console.log(good);
       overlay.classList.add("active");
+    }
+  });
+  overlay.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target === overlay || target.closest(".modal__close")) {
+      modalClose(overlay);
     }
   });
 };
@@ -47,6 +52,7 @@ const renderChangeGood = (data) => {
   modalChange.total.value = count * price;
   priceControl(modalChange);
   modalChange.image.src = `http://localhost:3000/${image}`;
+  const fieldset = modalChange.querySelector(".modal__fieldset");
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper");
   const pic = document.createElement("img");

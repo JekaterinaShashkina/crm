@@ -21,7 +21,7 @@ const modalOpen = (overlay, form) => {
   wrapper.classList.add("wrapper");
   fieldset.append(wrapper);
 };
-const modalClose = (overlay) => {
+export const modalClose = (overlay) => {
   overlay.classList.remove("active");
   modalForm.reset();
 };
@@ -99,12 +99,25 @@ const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
     }
   });
 };
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      resolve(reader.result);
+    });
+    reader.addEventListener("error", (err) => {
+      reject(err);
+    });
+    reader.readAsDataURL(file);
+  });
 
 export const submitProduct = (modalForm, overlay, id) => {
-  modalForm.addEventListener("submit", (e) => {
+  modalForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
+    newProduct.image = await toBase64(newProduct.image);
+    console.log(newProduct.image);
     if (id) {
       const resp = fetchRequest(`goods/${id}`, {
         method: "PATCH",
@@ -143,7 +156,7 @@ const uploadFile = () => {
         const preview = document.createElement("img");
         preview.classList.add("preview");
         const src = URL.createObjectURL(input.files[0]);
-        console.log(input.files[0].size);
+        console.log(input.files[0].size, src);
         preview.src = src;
         preview.style.display = "block";
         wrapper.append(preview);

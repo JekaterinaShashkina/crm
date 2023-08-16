@@ -19,5 +19,8 @@ const renderSearch = () => {
     method: "GET",
     callback: renderGoods,
   });
+  // const dataForCat = fetchRequest(`goods/category/${searchValue}`, {
+  //   callback: renderGoods,
+  // });
   console.log(data);
 };
