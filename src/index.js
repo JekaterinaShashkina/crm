@@ -1,5 +1,5 @@
 import { changeProduct } from "./modules/changeProduct";
-import { deleteRow } from "./modules/control";
+import { deleteRow, totalUpdate } from "./modules/control";
 import { fetchRequest } from "./modules/fetchRequest";
 import { renderGoods } from "./modules/render";
 import { searchControl } from "./modules/searchControl";
@@ -26,10 +26,7 @@ const init = () => {
   const goods = fetchRequest("goods", {
     callback: renderGoods,
   });
-  // const total = document.querySelector(".cms__total-price");
-  // const tableSum = getTableSum();
-  // const totalprice = totalUpdate(total, tableSum);
-  // total.textContent = ` $ ${totalprice}`;
+  totalUpdate();
 
   addProduct(overlay, modalForm, total, addGoods);
   changeProduct(list, overlayChange, goods);

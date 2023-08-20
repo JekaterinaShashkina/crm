@@ -1,6 +1,5 @@
-import { total } from "./var";
+import { total, totalprice } from "./var";
 
-let totalprice = 0;
 export const createRow = (obj, index) => {
   const { id, title, price, category, count, units, image } = obj;
   const tr = document.createElement("tr");
@@ -33,9 +32,9 @@ export const createRow = (obj, index) => {
   const tp = count * price;
   sum.textContent = `$${tp}`;
 
-  totalprice += tp;
-  // console.log(totalprice);
-  total.textContent = ` $ ${totalprice}`;
+  // totalprice += tp;
+  // // console.log(totalprice);
+  // total.textContent = ` $ ${totalprice}`;
 
   const wrapper = document.createElement("td");
   wrapper.classList.add("table__cell", "table__cell_btn-wrapper");

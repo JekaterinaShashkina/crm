@@ -14,3 +14,4 @@ export const getVendorCode = () => document.querySelector(".vendor-code__id");
 export const addGoods = document.querySelector(".panel__add-goods");
 export const URL = "http://localhost:3000/api/";
 export const overlayChange = document.querySelector(".overlay__change");
+export let totalprice = 0;

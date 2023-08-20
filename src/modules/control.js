@@ -1,11 +1,6 @@
 import { fetchRequest } from "./fetchRequest";
 import { renderGoods } from "./render";
-import {
-  modalCheckbox,
-  modalInputDiscount,
-  getVendorCode,
-  modalForm,
-} from "./var";
+import { getVendorCode, modalForm } from "./var";
 
 export const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
@@ -23,7 +18,22 @@ export const modalClose = (overlay) => {
     document.querySelector(".message").textContent = "";
   }
 };
-
+export const totalUpdate = () => {
+  let total = 0;
+  const goodsNew = fetchRequest("goods", {
+    method: "GET",
+    callback: (data, err) => {
+      const goods = data.map((elems) => {
+        const { price, count } = elems;
+        const p = price * count;
+        total += p;
+      });
+      console.log(total);
+      const totalDiv = document.querySelector(".cms__total-price");
+      totalDiv.textContent = `$ ${total}`;
+    },
+  });
+};
 export const deleteRow = (list) => {
   list.addEventListener("click", (e) => {
     const target = e.target;
@@ -47,7 +57,7 @@ export const deleteRow = (list) => {
                 return;
               } else {
                 modalClose(confirm);
-
+                totalUpdate();
                 const goods = fetchRequest("goods", {
                   callback: renderGoods,
                 });
@@ -61,20 +71,9 @@ export const deleteRow = (list) => {
         ) {
           modalClose(confirm);
         }
-
-        // location.reload();
       });
     }
   });
-};
-export const totalUpdate = (total, arr) => {
-  total.textContent = "";
-  let totalprice = 0;
-  arr.forEach((elem) => {
-    const sum = elem.innerHTML;
-    totalprice += +sum.slice(1);
-  });
-  return totalprice;
 };
 
 export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
@@ -120,6 +119,7 @@ export const submitProduct = (modalForm, overlay, id) => {
             return;
           } else {
             modalClose(overlay);
+            totalUpdate();
             const goods = fetchRequest("goods", {
               callback: renderGoods,
             });
@@ -137,13 +137,14 @@ export const submitProduct = (modalForm, overlay, id) => {
             return;
           } else {
             modalClose(overlay);
+            totalUpdate();
+
             const goods = fetchRequest("goods", {
               callback: renderGoods,
             });
           }
         },
       });
-      // console.log(resp);
     }
     modalForm.reset();
   });
@@ -157,13 +158,11 @@ export const uploadFile = () => {
 
     if (input.files.length > 0) {
       if (input.files[0].size < 1000000) {
-        // preview.classList.add("preview");
         const src = URL.createObjectURL(input.files[0]);
         console.log(input.files[0].size, src);
         const imagepreview = document.querySelector(".image__preview");
         imagepreview.src = src;
         imagepreview.style.display = "block";
-        // wrapper.append(preview);
       } else {
         const message = document.createElement("p");
         message.classList.add("message");
@@ -179,7 +178,6 @@ export const getCategory = () => {
     method: "GET",
     callback: createCategory,
   });
-  // console.log(data);
 };
 const createCategory = (data, err) => {
   if (err) {
@@ -188,7 +186,6 @@ const createCategory = (data, err) => {
   }
   const categories = data.map((elem) => {
     const option = document.createElement("option");
-    // console.log("elem", elem);
     option.value = elem;
     return option;
   });

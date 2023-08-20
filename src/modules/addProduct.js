@@ -8,12 +8,10 @@ import {
   submitProduct,
 } from "./control";
 import { modalCheckbox, modalInputDiscount } from "./var";
-export const addProduct = (overlay, modalForm, total, addGoods) => {
+export const addProduct = (overlay, modalForm, addGoods) => {
   addGoods.addEventListener("click", () => {
     modalOpen(overlay, modalForm);
     controlCheckbox(modalCheckbox, modalInputDiscount);
-    total.textContent = "";
-    console.log(total);
   });
   getCategory();
   uploadFile();

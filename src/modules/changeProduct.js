@@ -12,7 +12,6 @@ export const changeProduct = (list, overlay, goods) => {
         method: "GET",
         callback: renderChangeGood,
       });
-      // console.log(good);
       overlay.classList.add("active");
     }
   });
