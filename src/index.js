@@ -32,7 +32,6 @@ const init = () => {
   changeProduct(list, overlayChange, goods);
   deleteRow(list);
 
-  searchControl();
   list.addEventListener("click", (e) => {
     if (e.target.closest(".table__btn_pic")) {
       console.log(e.target);
@@ -41,3 +40,4 @@ const init = () => {
   });
 };
 init();
+searchControl();
