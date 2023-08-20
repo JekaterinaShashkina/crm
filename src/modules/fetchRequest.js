@@ -1,4 +1,4 @@
-import { URL } from "./var.js";
+import { URL } from "./var";
 
 export const fetchRequest = async (
   postfix,
@@ -20,9 +20,13 @@ export const fetchRequest = async (
       if (callback) return callback(data);
       return;
     }
-
     throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
   } catch (err) {
     return callback(err);
   }
+};
+const errorShow = (err) => {
+  const errDiv = document.createElement("div");
+  errDiv.textContent = err;
+  window.append(errDiv);
 };

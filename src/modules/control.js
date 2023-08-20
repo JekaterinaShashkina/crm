@@ -1,49 +1,27 @@
-import { dataArray } from "../dataArray.js";
-import { fetchRequest } from "./fetchRequest.js";
-import { renderGoods } from "./render.js";
+import { fetchRequest } from "./fetchRequest";
+import { renderGoods } from "./render";
 import {
   modalCheckbox,
   modalInputDiscount,
-  getTableSum,
   getVendorCode,
   modalForm,
-} from "./var.js";
+} from "./var";
 
-const modalOpen = (overlay, form) => {
+export const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
   const vendorCode = getVendorCode();
   // При открытии модального окна должен генерироваться случайный id и заполняться span с классом vendor-code__id
   const id = Math.floor(Math.random() * 1000000);
   vendorCode.textContent = id;
   form.total.textContent = 0;
-  const fieldset = document.querySelector(".modal__fieldset");
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("wrapper");
-  fieldset.append(wrapper);
 };
 export const modalClose = (overlay) => {
   overlay.classList.remove("active");
   modalForm.reset();
-};
-
-export const addProduct = (overlay, modalForm, total, addGoods) => {
-  addGoods.addEventListener("click", () => {
-    modalOpen(overlay, modalForm);
-    controlCheckbox(modalCheckbox, modalInputDiscount);
-    total.textContent = "";
-    console.log(total);
-  });
-  getCategory();
-  uploadFile();
-  // Итоговая стоимость в модальном окне должна правильно высчитываться при смене фокуса
-  priceControl(modalForm);
-  overlay.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target === overlay || target.closest(".modal__close")) {
-      modalClose(overlay);
-    }
-  });
-  submitProduct(modalForm, overlay);
+  document.querySelector(".image__preview").src = "";
+  if (document.querySelector(".message")) {
+    document.querySelector(".message").textContent = "";
+  }
 };
 
 export const deleteRow = (list) => {
@@ -60,11 +38,22 @@ export const deleteRow = (list) => {
           const tr = target.closest("tr");
           const id = tr.querySelector(".table__cell-id").textContent.slice(4);
           console.log(id);
-          tr.remove();
+          // tr.remove();
           fetchRequest(`goods/${id}`, {
             method: "DELETE",
+            callback: (data, err) => {
+              if (err) {
+                console.warn(err, data);
+                return;
+              } else {
+                modalClose(confirm);
+
+                const goods = fetchRequest("goods", {
+                  callback: renderGoods,
+                });
+              }
+            },
           });
-          modalClose(confirm);
         } else if (
           e.target.closest(".confirm__overlay") ||
           e.target.closest(".modal__close") ||
@@ -72,6 +61,8 @@ export const deleteRow = (list) => {
         ) {
           modalClose(confirm);
         }
+
+        // location.reload();
       });
     }
   });
@@ -86,7 +77,7 @@ export const totalUpdate = (total, arr) => {
   return totalprice;
 };
 
-const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
+export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
   modalCheckbox.addEventListener("click", () => {
     if (modalCheckbox.checked) {
       modalInputDiscount.removeAttribute("disabled");
@@ -117,49 +108,62 @@ export const submitProduct = (modalForm, overlay, id) => {
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
     newProduct.image = await toBase64(newProduct.image);
-    console.log(newProduct.image);
+    newProduct.discount = newProduct.discount_count;
+    console.log(newProduct);
     if (id) {
       const resp = fetchRequest(`goods/${id}`, {
         method: "PATCH",
         body: newProduct,
+        callback: (data, err) => {
+          if (err) {
+            console.warn(err, data);
+            return;
+          } else {
+            modalClose(overlay);
+            const goods = fetchRequest("goods", {
+              callback: renderGoods,
+            });
+          }
+        },
       });
     } else {
       const resp = fetchRequest("goods", {
         method: "POST",
         body: newProduct,
-        // callback: (err, data) => {
-        //   if (err) {
-        //     console.warn(err, data);
-        //     return;
-        //   }
-        // },
+        callback: (data, err) => {
+          console.log(data, err);
+          if (err) {
+            console.warn(err);
+            return;
+          } else {
+            modalClose(overlay);
+            const goods = fetchRequest("goods", {
+              callback: renderGoods,
+            });
+          }
+        },
       });
       // console.log(resp);
     }
-
     modalForm.reset();
-    modalClose(overlay);
-    const goods = fetchRequest("goods", {
-      callback: renderGoods,
-    });
   });
 };
 
-const uploadFile = () => {
+export const uploadFile = () => {
   const input = document.querySelector(".modal__file");
   input.addEventListener("change", () => {
     const wrapper = document.querySelector(".wrapper");
-    console.log(wrapper);
+    // console.log(wrapper);
 
     if (input.files.length > 0) {
       if (input.files[0].size < 1000000) {
-        const preview = document.createElement("img");
-        preview.classList.add("preview");
+        // preview.classList.add("preview");
         const src = URL.createObjectURL(input.files[0]);
         console.log(input.files[0].size, src);
-        preview.src = src;
-        preview.style.display = "block";
-        wrapper.append(preview);
+        const imagepreview = document.querySelector(".image__preview");
+        imagepreview.src = src;
+        imagepreview.style.display = "block";
+        // wrapper.append(preview);
       } else {
         const message = document.createElement("p");
         message.classList.add("message");
@@ -170,7 +174,7 @@ const uploadFile = () => {
   });
 };
 const datalist = document.querySelector("#category-list");
-const getCategory = () => {
+export const getCategory = () => {
   const data = fetchRequest("category", {
     method: "GET",
     callback: createCategory,

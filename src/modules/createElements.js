@@ -1,5 +1,4 @@
-import { totalUpdate } from "./control.js";
-import { getTableSum, total, URL } from "./var.js";
+import { total } from "./var";
 
 let totalprice = 0;
 export const createRow = (obj, index) => {
@@ -60,4 +59,12 @@ export const createRow = (obj, index) => {
     wrapper
   );
   return tr;
+};
+export const createImageWrapper = () => {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("wrapper");
+  const image = document.createElement("img");
+  image.classList.add("image_preview");
+  wrapper.append(image);
+  return wrapper;
 };

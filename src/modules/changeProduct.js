@@ -1,6 +1,6 @@
-import { modalClose, priceControl, submitProduct } from "./control.js";
-import { fetchRequest } from "./fetchRequest.js";
-import { modalChange, overlayChange, URL } from "./var.js";
+import { modalClose, priceControl, submitProduct } from "./control";
+import { fetchRequest } from "./fetchRequest";
+import { modalChange, overlayChange } from "./var";
 
 export const changeProduct = (list, overlay, goods) => {
   list.addEventListener("click", (e) => {
@@ -37,7 +37,9 @@ const renderChangeGood = (data) => {
     category,
     image,
   } = data;
-  const idSpan = document.querySelector(".vendor-code__id");
+  const idSpan = overlayChange.querySelector(".vendor-code__id");
+  console.log(idSpan);
+  idSpan.textContent = id;
   modalChange.title.value = title;
   modalChange.description.value = description;
   modalChange.price.value = price;
@@ -52,14 +54,14 @@ const renderChangeGood = (data) => {
   modalChange.total.value = count * price;
   priceControl(modalChange);
   modalChange.image.src = `http://localhost:3000/${image}`;
-  const fieldset = modalChange.querySelector(".modal__fieldset");
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("wrapper");
-  const pic = document.createElement("img");
-  pic.src = `http://localhost:3000/${image}`;
-  wrapper.append(pic);
-  fieldset.append(wrapper);
-  idSpan.textContent = id;
+  // const fieldset = modalChange.querySelector(".modal__fieldset");
+  // const wrapper = document.createElement("div");
+  // wrapper.classList.add("wrapper");
+  // const pic = document.createElement("img");
+  const imagePreview = overlayChange.querySelector(".image__preview");
+  imagePreview.src = `http://localhost:3000/${image}`;
+  // wrapper.append(pic);
+  // fieldset.append(wrapper);
   const submit = modalChange.querySelector(".modal__submit");
   submit.textContent = "Изменить товар";
   console.log(modalChange);

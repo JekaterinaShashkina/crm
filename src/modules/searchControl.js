@@ -1,5 +1,5 @@
-import { fetchRequest } from "./fetchRequest.js";
-import { renderGoods } from "./render.js";
+import { fetchRequest } from "./fetchRequest";
+import { renderGoods } from "./render";
 export const searchControl = () => {
   const form = document.querySelector(".panel__search");
   form.addEventListener("change", debounce(renderSearch, 300));
