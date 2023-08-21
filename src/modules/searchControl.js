@@ -20,7 +20,6 @@ export const searchControl = () => {
       data.then((elems) => {
         table.append(...elems[0]);
         table.append(...elems[1]);
-        console.log(elems);
       });
       return data;
     }, 300)

@@ -1,14 +1,14 @@
 import { modalClose, priceControl, submitProduct } from "./control";
-import { fetchRequest } from "./fetchRequest";
+import { errorShow, fetchRequest } from "./fetchRequest";
 import { modalChange, overlayChange } from "./var";
 
-export const changeProduct = (list, overlay, goods) => {
+export const changeProduct = (list, overlay) => {
   list.addEventListener("click", (e) => {
     const target = e.target;
     if (target.closest(".table__btn_edit")) {
       const tr = target.closest("tr");
       const id = tr.querySelector(".table__cell-id").textContent.slice(4);
-      const good = fetchRequest(`goods/${id}`, {
+      fetchRequest(`goods/${id}`, {
         method: "GET",
         callback: renderChangeGood,
       });
@@ -23,8 +23,12 @@ export const changeProduct = (list, overlay, goods) => {
   });
 };
 
-const renderChangeGood = (data) => {
-  console.log(data);
+const renderChangeGood = (err, data) => {
+  if (err) {
+    console.warn(err, data);
+    errorShow(err);
+    return;
+  }
   const {
     title,
     description,
@@ -37,7 +41,6 @@ const renderChangeGood = (data) => {
     image,
   } = data;
   const idSpan = overlayChange.querySelector(".vendor-code__id");
-  console.log(idSpan);
   idSpan.textContent = id;
   modalChange.title.value = title;
   modalChange.description.value = description;
@@ -45,7 +48,6 @@ const renderChangeGood = (data) => {
   modalChange.units.value = units;
   modalChange.discount_count.value = discount;
   if (+discount > 0) {
-    console.log(modalChange.discount);
     modalChange.discount.checked = true;
   }
   modalChange.category.value = category;
@@ -53,16 +55,9 @@ const renderChangeGood = (data) => {
   modalChange.total.value = count * price;
   priceControl(modalChange);
   modalChange.image.src = `http://localhost:3000/${image}`;
-  // const fieldset = modalChange.querySelector(".modal__fieldset");
-  // const wrapper = document.createElement("div");
-  // wrapper.classList.add("wrapper");
-  // const pic = document.createElement("img");
   const imagePreview = overlayChange.querySelector(".image__preview");
   imagePreview.src = `http://localhost:3000/${image}`;
-  // wrapper.append(pic);
-  // fieldset.append(wrapper);
   const submit = modalChange.querySelector(".modal__submit");
   submit.textContent = "Изменить товар";
-  console.log(modalChange);
   submitProduct(modalChange, overlayChange, id);
 };

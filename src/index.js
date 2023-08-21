@@ -1,5 +1,5 @@
 import { changeProduct } from "./modules/changeProduct";
-import { deleteRow, totalUpdate } from "./modules/control";
+import { totalUpdate } from "./modules/control";
 import { fetchRequest } from "./modules/fetchRequest";
 import { renderGoods } from "./modules/render";
 import { searchControl } from "./modules/searchControl";
@@ -8,11 +8,11 @@ import {
   modalForm,
   overlay,
   addGoods,
-  total,
   overlayChange,
 } from "./modules/var";
 import { addProduct } from "./modules/addProduct";
 import "./css/index.css";
+import { deleteRow } from "./modules/deleteProduct";
 
 const init = () => {
   const wrapper = document.createElement("div");
@@ -28,8 +28,8 @@ const init = () => {
   });
   totalUpdate();
 
-  addProduct(overlay, modalForm, total, addGoods);
-  changeProduct(list, overlayChange, goods);
+  addProduct(overlay, modalForm, addGoods);
+  changeProduct(list, overlayChange);
   deleteRow(list);
 
   list.addEventListener("click", (e) => {

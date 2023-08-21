@@ -1,4 +1,4 @@
-import { fetchRequest } from "./fetchRequest";
+import { errorShow, fetchRequest } from "./fetchRequest";
 import { renderGoods } from "./render";
 import { getVendorCode, modalForm } from "./var";
 
@@ -20,59 +20,22 @@ export const modalClose = (overlay) => {
 };
 export const totalUpdate = () => {
   let total = 0;
-  const goodsNew = fetchRequest("goods", {
+  fetchRequest("goods", {
     method: "GET",
-    callback: (data, err) => {
-      const goods = data.map((elems) => {
+    callback: (err, data) => {
+      if (err) {
+        console.warn(err, data);
+        errorShow(err);
+        return;
+      }
+      data.map((elems) => {
         const { price, count } = elems;
         const p = price * count;
         total += p;
       });
-      console.log(total);
       const totalDiv = document.querySelector(".cms__total-price");
       totalDiv.textContent = `$ ${total}`;
     },
-  });
-};
-export const deleteRow = (list) => {
-  list.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.closest(".table__btn_del")) {
-      const confirm = document.querySelector(".confirm__overlay");
-      const agreeBtn = confirm.querySelector(".modal__submit");
-      const closeBtn = confirm.querySelector(".modal__cancel");
-      confirm.classList.add("active");
-      confirm.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (e.target === agreeBtn) {
-          const tr = target.closest("tr");
-          const id = tr.querySelector(".table__cell-id").textContent.slice(4);
-          console.log(id);
-          // tr.remove();
-          fetchRequest(`goods/${id}`, {
-            method: "DELETE",
-            callback: (data, err) => {
-              if (err) {
-                console.warn(err, data);
-                return;
-              } else {
-                modalClose(confirm);
-                totalUpdate();
-                const goods = fetchRequest("goods", {
-                  callback: renderGoods,
-                });
-              }
-            },
-          });
-        } else if (
-          e.target.closest(".confirm__overlay") ||
-          e.target.closest(".modal__close") ||
-          e.target === closeBtn
-        ) {
-          modalClose(confirm);
-        }
-      });
-    }
   });
 };
 
@@ -108,38 +71,38 @@ export const submitProduct = (modalForm, overlay, id) => {
     const newProduct = Object.fromEntries(formData);
     newProduct.image = await toBase64(newProduct.image);
     newProduct.discount = newProduct.discount_count;
-    console.log(newProduct);
     if (id) {
-      const resp = fetchRequest(`goods/${id}`, {
+      fetchRequest(`goods/${id}`, {
         method: "PATCH",
         body: newProduct,
-        callback: (data, err) => {
+        callback: (err, data) => {
           if (err) {
             console.warn(err, data);
+            errorShow(err);
             return;
           } else {
             modalClose(overlay);
             totalUpdate();
-            const goods = fetchRequest("goods", {
+            fetchRequest("goods", {
               callback: renderGoods,
             });
           }
         },
       });
     } else {
-      const resp = fetchRequest("goods", {
+      fetchRequest("goods", {
         method: "POST",
         body: newProduct,
-        callback: (data, err) => {
+        callback: (err, data) => {
           console.log(data, err);
           if (err) {
             console.warn(err);
+            errorShow(err);
             return;
           } else {
             modalClose(overlay);
             totalUpdate();
-
-            const goods = fetchRequest("goods", {
+            fetchRequest("goods", {
               callback: renderGoods,
             });
           }
@@ -154,7 +117,6 @@ export const uploadFile = () => {
   const input = document.querySelector(".modal__file");
   input.addEventListener("change", () => {
     const wrapper = document.querySelector(".wrapper");
-    // console.log(wrapper);
 
     if (input.files.length > 0) {
       if (input.files[0].size < 1000000) {
@@ -174,13 +136,14 @@ export const uploadFile = () => {
 };
 const datalist = document.querySelector("#category-list");
 export const getCategory = () => {
-  const data = fetchRequest("category", {
+  fetchRequest("category", {
     method: "GET",
     callback: createCategory,
   });
 };
-const createCategory = (data, err) => {
+const createCategory = (err, data) => {
   if (err) {
+    errorShow(err);
     console.warn(err, data);
     return;
   }
