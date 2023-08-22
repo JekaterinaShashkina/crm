@@ -15,22 +15,7 @@ export const deleteRow = (list) => {
         if (e.target === agreeBtn) {
           const tr = target.closest("tr");
           const id = tr.querySelector(".table__cell-id").textContent.slice(4);
-          fetchRequest(`goods/${id}`, {
-            method: "DELETE",
-            callback: (err, data) => {
-              if (err) {
-                errorShow(err);
-                console.warn(err, data);
-                return;
-              } else {
-                fetchRequest("goods", {
-                  callback: renderGoods,
-                });
-                modalClose(confirm);
-                totalUpdate();
-              }
-            },
-          });
+          deleteProduct(id, confirm);
         } else if (
           e.target.closest(".confirm__overlay") ||
           e.target.closest(".modal__close") ||
@@ -40,5 +25,24 @@ export const deleteRow = (list) => {
         }
       });
     }
+  });
+};
+
+const deleteProduct = (id, confirm) => {
+  fetchRequest(`goods/${id}`, {
+    method: "DELETE",
+    callback: (err, data) => {
+      if (err) {
+        errorShow(err);
+        console.warn(err, data);
+        return;
+      } else {
+        fetchRequest("goods", {
+          callback: renderGoods,
+        });
+        modalClose(confirm);
+        totalUpdate();
+      }
+    },
   });
 };

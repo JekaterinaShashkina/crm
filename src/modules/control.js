@@ -6,7 +6,7 @@ export const modalOpen = (overlay, form) => {
   overlay.classList.add("active");
   const vendorCode = getVendorCode();
   // При открытии модального окна должен генерироваться случайный id и заполняться span с классом vendor-code__id
-  const id = Math.floor(Math.random() * 1000000);
+  const id = Date.now();
   vendorCode.textContent = id;
   form.total.textContent = 0;
 };
@@ -71,48 +71,56 @@ export const submitProduct = (modalForm, overlay, id) => {
     const newProduct = Object.fromEntries(formData);
     newProduct.image = await toBase64(newProduct.image);
     newProduct.discount = newProduct.discount_count;
+    console.log(newProduct);
     if (id) {
-      fetchRequest(`goods/${id}`, {
-        method: "PATCH",
-        body: newProduct,
-        callback: (err, data) => {
-          if (err) {
-            console.warn(err, data);
-            errorShow(err);
-            return;
-          } else {
-            modalClose(overlay);
-            totalUpdate();
-            fetchRequest("goods", {
-              callback: renderGoods,
-            });
-          }
-        },
-      });
+      patchProduct(id, newProduct, overlay);
     } else {
-      fetchRequest("goods", {
-        method: "POST",
-        body: newProduct,
-        callback: (err, data) => {
-          console.log(data, err);
-          if (err) {
-            console.warn(err);
-            errorShow(err);
-            return;
-          } else {
-            modalClose(overlay);
-            totalUpdate();
-            fetchRequest("goods", {
-              callback: renderGoods,
-            });
-          }
-        },
-      });
+      postProduct(newProduct, overlay);
     }
     modalForm.reset();
   });
 };
 
+const patchProduct = (id, newProduct, overlay) => {
+  fetchRequest(`goods/${id}`, {
+    method: "PATCH",
+    body: newProduct,
+    callback: (err, data) => {
+      if (err) {
+        console.warn(err, data);
+        errorShow(err);
+        return;
+      } else {
+        modalClose(overlay);
+        totalUpdate();
+        fetchRequest("goods", {
+          callback: renderGoods,
+        });
+      }
+    },
+  });
+};
+const postProduct = (newProduct, overlay) => {
+  newProduct.id = getVendorCode().textContent;
+  fetchRequest("goods", {
+    method: "POST",
+    body: newProduct,
+    callback: (err, data) => {
+      console.log(data, err);
+      if (err) {
+        console.warn(err);
+        errorShow(err);
+        return;
+      } else {
+        modalClose(overlay);
+        totalUpdate();
+        fetchRequest("goods", {
+          callback: renderGoods,
+        });
+      }
+    },
+  });
+};
 export const uploadFile = () => {
   const input = document.querySelector(".modal__file");
   input.addEventListener("change", () => {

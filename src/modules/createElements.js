@@ -31,11 +31,6 @@ export const createRow = (obj, index) => {
   sum.classList.add("table__cell", "table__sum");
   const tp = count * price;
   sum.textContent = `$${tp}`;
-
-  // totalprice += tp;
-  // // console.log(totalprice);
-  // total.textContent = ` $ ${totalprice}`;
-
   const wrapper = document.createElement("td");
   wrapper.classList.add("table__cell", "table__cell_btn-wrapper");
   const picBtn = document.createElement("button");
@@ -59,6 +54,7 @@ export const createRow = (obj, index) => {
   );
   return tr;
 };
+
 export const createImageWrapper = () => {
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper");

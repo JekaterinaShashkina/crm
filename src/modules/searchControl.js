@@ -8,20 +8,7 @@ export const searchControl = () => {
     "change",
     debounce((e) => {
       const searchValue = document.querySelector(".panel__search").search.value;
-      const data = Promise.all([
-        fetchRequest(`goods?search=${searchValue}`, {
-          method: "GET",
-          callback: renderGoods,
-        }),
-        fetchRequest(`goods/category/${searchValue}`, {
-          callback: renderGoods,
-        }),
-      ]);
-      data.then((elems) => {
-        table.append(...elems[0]);
-        table.append(...elems[1]);
-      });
-      return data;
+      return searchGoods(searchValue);
     }, 300)
   );
 };
@@ -32,4 +19,21 @@ const debounce = (callback, delay) => {
     clearTimeout(timeout);
     timeout = setTimeout(callback, delay);
   };
+};
+
+const searchGoods = (value) => {
+  const data = Promise.all([
+    fetchRequest(`goods?search=${value}`, {
+      method: "GET",
+      callback: renderGoods,
+    }),
+    fetchRequest(`goods/category/${value}`, {
+      callback: renderGoods,
+    }),
+  ]);
+  data.then((elems) => {
+    table.append(...elems[0]);
+    table.append(...elems[1]);
+  });
+  return data;
 };

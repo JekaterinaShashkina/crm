@@ -24,6 +24,7 @@ export const fetchRequest = async (
     }
     throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
   } catch (err) {
+    console.log(err);
     return errorShow("что то пошло не так");
   }
 };

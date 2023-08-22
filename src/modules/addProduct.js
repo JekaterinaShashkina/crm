@@ -8,6 +8,7 @@ import {
   submitProduct,
 } from "./control";
 import { modalCheckbox, modalInputDiscount } from "./var";
+
 export const addProduct = (overlay, modalForm, addGoods) => {
   addGoods.addEventListener("click", () => {
     modalOpen(overlay, modalForm);
