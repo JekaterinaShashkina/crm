@@ -1,5 +1,3 @@
-import { total, totalprice } from "./var";
-
 export const createRow = (obj, index) => {
   const { id, title, price, category, count, units, image } = obj;
   const tr = document.createElement("tr");

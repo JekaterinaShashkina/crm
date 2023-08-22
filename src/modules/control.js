@@ -10,6 +10,7 @@ export const modalOpen = (overlay, form) => {
   vendorCode.textContent = id;
   form.total.textContent = 0;
 };
+
 export const modalClose = (overlay) => {
   overlay.classList.remove("active");
   modalForm.reset();
@@ -18,6 +19,7 @@ export const modalClose = (overlay) => {
     document.querySelector(".message").textContent = "";
   }
 };
+
 export const totalUpdate = () => {
   let total = 0;
   fetchRequest("goods", {
@@ -52,6 +54,7 @@ export const controlCheckbox = (modalCheckbox, modalInputDiscount) => {
     }
   });
 };
+
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -106,7 +109,6 @@ const postProduct = (newProduct, overlay) => {
     method: "POST",
     body: newProduct,
     callback: (err, data) => {
-      console.log(data, err);
       if (err) {
         console.warn(err);
         errorShow(err);
